@@ -1,0 +1,79 @@
+import json
+from collections import Counter
+from bokeh.plotting import figure, show, output_file
+output_file("plot.html")
+
+birthday = {}
+with open("birthdays.json", "r") as f:
+    birthday = json.load(f)
+        
+def add_entry():
+    name = input("Who do you want to add to the Birthday Dictionnary?\n").title()
+    date = input("When is {} born?".format(name))
+    birthday[name] = date
+    with open("birthdays.json", "w") as f:
+        json.dump(birthday, f)
+    print("{} was added to my birtday list.".format(name))
+
+def find_date():
+    name = input("who's birthday do you want to know?").title()
+    if name in birthday: 
+        print("{} birthday is {}.".format(name,birthday[name]))
+    else:
+        print('Sadly, we don\'t have {}\'s birthday.'.format(name))
+                
+def show_names():
+    print("Welcome to the birthday dictionary. We know the birthdays of: ")
+    for names in birthday:
+        print(names)
+        
+def splitting():
+    x = birthday.keys()
+    name_list = []
+    for i in x:
+        name_list.append(birthday[i])
+    i = 0
+    splitted = []
+    while i < len(name_list):
+        splitted.append(name_list[i].split(" "))
+        i += 1
+    return splitted
+
+def counting(list):
+    i = 0
+    x = []
+    while i < len(list):
+        x.append(list[i][1])
+        i += 1
+    c = Counter(x)
+    return c
+
+#plot 
+def data(c):
+    x_categories = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]    
+    x_list = c.keys()
+    x = []
+    for i in x_list:
+        x.append(i)
+    y = []
+    for i in x:
+        y.append(c[i])  
+    p = figure(x_range=x_categories)
+    p.vbar(x=x, top=y, width=0.5)
+    show(p)
+
+    
+if __name__ == "__main__":
+    while True:
+        what = input("What do you want to do next? You can: Add, Find, Show, Quit ").capitalize()
+        if what == "Quit":
+            print("Good Bye")
+            break
+        elif what == "Add":
+            add_entry()
+        elif what == "Show":
+            show()
+        elif what == "Find":
+            find_date()
+        elif what == "Graph":
+            data(counting(splitting()))
