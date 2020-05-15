@@ -1,2 +1,2 @@
-# hello-world
-just another repository
+# Python projects
+repository of my python projects
